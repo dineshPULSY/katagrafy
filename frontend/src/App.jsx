@@ -1,18 +1,27 @@
 import React, { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import { I18nextProvider } from "react-i18next";
-import { ContextWrapper } from "@/AuthContext";
+// import { ContextWrapper } from "@/AuthContext"; // Removed
 import PrivateRoute, {
   AdminRoute,
   ManagerRoute,
 } from "@/components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Login from "@/pages/Login";
+// import Login from "@/pages/Login"; // Commented out
 import SimpleSSOPassthrough from "@/pages/Login/SSO/simple";
 import OnboardingFlow from "@/pages/OnboardingFlow";
+import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import i18n from "./i18n";
 
+import LandingPage from "@/pages/LandingPage/LandingPage";
+import SignInPage from "@/pages/SignInPage";
+import SignUpPage from "@/pages/SignUpPage";
+import UserProfilePage from "@/pages/UserProfilePage";
+import PricingPage from "@/pages/PricingPage";
+import PaymentSuccessPage from "@/pages/PaymentSuccessPage";
+import PaymentCancelPage from "@/pages/PaymentCancelPage";
+import DashboardPage from "@/pages/DashboardPage"; // Added import
 import { PfpProvider } from "./PfpContext";
 import { LogoProvider } from "./LogoContext";
 import { FullScreenLoader } from "./components/Preloader";
@@ -94,13 +103,35 @@ export default function App() {
   return (
     <ThemeProvider>
       <Suspense fallback={<FullScreenLoader />}>
-        <ContextWrapper>
-          <LogoProvider>
-            <PfpProvider>
-              <I18nextProvider i18n={i18n}>
+        {/* <ContextWrapper> was here */}
+        <LogoProvider>
+          <PfpProvider>
+            <I18nextProvider i18n={i18n}>
+                <header style={{ padding: '1rem', backgroundColor: '#f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <Link to="/">Home</Link>
+                  </div>
+                  <div>
+                    <SignedOut>
+                      <Link to="/sign-in" style={{ marginRight: '1rem' }}>Sign In</Link>
+                      <Link to="/sign-up">Sign Up</Link>
+                    </SignedOut>
+                    <SignedIn>
+                      <Link to="/user" style={{ marginRight: '1rem' }}>User Profile (Clerk)</Link>
+                      <UserButton afterSignOutUrl="/" />
+                    </SignedIn>
+                  </div>
+                </header>
                 <Routes>
-                  <Route path="/" element={<PrivateRoute Component={Main} />} />
-                  <Route path="/login" element={<Login />} />
+                  <Route path="/" element={<LandingPage />} />
+                  {/* <Route path="/login" element={<Login />} /> */}
+                  <Route path="/sign-in/*" element={<SignInPage />} />
+                  <Route path="/sign-up/*" element={<SignUpPage />} />
+                  <Route path="/user" element={<UserProfilePage />} />
+                  <Route path="/pricing" element={<PricingPage />} />
+                  <Route path="/payment/success" element={<PaymentSuccessPage />} />
+                  <Route path="/payment/cancel" element={<PaymentCancelPage />} />
+                  <Route path="/dashboard" element={<PrivateRoute Component={DashboardPage} />} /> {/* Updated route */}
                   <Route
                     path="/sso/simple"
                     element={<SimpleSSOPassthrough />}
@@ -270,7 +301,7 @@ export default function App() {
               </I18nextProvider>
             </PfpProvider>
           </LogoProvider>
-        </ContextWrapper>
+        {/* </ContextWrapper> was here */}
       </Suspense>
     </ThemeProvider>
   );

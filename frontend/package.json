@@ -11,9 +11,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.31.9",
+    "@clerk/clerk-sdk-node": "^5.1.6",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@mintplex-labs/piper-tts-web": "^1.0.4",
     "@phosphor-icons/react": "^2.1.7",
+    "@stripe/stripe-js": "^7.3.1",
     "@tremor/react": "^3.15.1",
     "dompurify": "^3.0.8",
     "file-saver": "^2.0.5",
